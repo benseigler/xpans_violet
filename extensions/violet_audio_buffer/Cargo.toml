@@ -2,7 +2,7 @@
 name = "violet_audio_buffer"
 version = "0.1.0"
 edition = "2024"
-description = "Reserved for xpans"
+description = "Adds an audio input buffer to xpans Violet"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 homepage = "https://xpans.audio"
