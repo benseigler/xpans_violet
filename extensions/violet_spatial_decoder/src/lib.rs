@@ -191,10 +191,44 @@ fn spatial_decoder_process<Scene, T>(
 }
 
 fn apply_changes<T: Copy>(source: &mut Source<T>, changes: &xpans_xsr::Changes<T>) {
-    changes.pos_x.map(|v| source.pos_x = v);
-    changes.pos_y.map(|v| source.pos_y = v);
-    changes.pos_z.map(|v| source.pos_z = v);
-    changes.ext_x.map(|v| source.ext_x = v);
-    changes.ext_y.map(|v| source.ext_y = v);
-    changes.ext_z.map(|v| source.ext_z = v);
+    changes.pos_x.inspect(|v| source.pos_x = *v);
+    changes.pos_y.inspect(|v| source.pos_y = *v);
+    changes.pos_z.inspect(|v| source.pos_z = *v);
+    changes.ext_x.inspect(|v| source.ext_x = *v);
+    changes.ext_y.inspect(|v| source.ext_y = *v);
+    changes.ext_z.inspect(|v| source.ext_z = *v);
+}
+
+#[cfg(test)]
+#[test]
+fn apply_changes_works() {
+    let mut source = Source::<f32> {
+        pos_x: 0.,
+        pos_y: 0.,
+        pos_z: 0.,
+        ext_x: 0.,
+        ext_y: 0.,
+        ext_z: 0.,
+    };
+    let changes = xpans_xsr::Changes::<f32> {
+        pos_x: Some(1.),
+        pos_y: Some(1.),
+        pos_z: Some(1.),
+        ext_x: Some(1.),
+        ext_y: Some(1.),
+        ext_z: Some(1.),
+    };
+
+    apply_changes(&mut source, &changes);
+
+    let desired = Source::<f32> {
+        pos_x: 1.,
+        pos_y: 1.,
+        pos_z: 1.,
+        ext_x: 1.,
+        ext_y: 1.,
+        ext_z: 1.,
+    };
+
+    assert_eq!(source, desired);
 }
